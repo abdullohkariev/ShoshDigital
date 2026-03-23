@@ -9,7 +9,7 @@
 </head>
 <body>
 
-<nav id="nav">
+<nav id="nav" role="navigation" aria-label="Main navigation">
   <a href="#hero" class="nav-logo">Shosh <span>Digital</span></a>
   <div class="nav-links" id="navlinks">
     <a href="#services" class="nl" data-k="nav_services">Xizmatlar</a>
@@ -25,7 +25,7 @@
       <button class="lbtn"        onclick="setLang('en')">EN</button>
     </div>
     <a href="#contact" class="nav-cta" data-k="nav_cta">Loyiha boshlash &#x2192;</a>
-    <button class="nav-burger" id="burger" aria-label="Menu">
+    <button class="nav-burger" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="navlinks">
       <span></span><span></span><span></span>
     </button>
   </div>

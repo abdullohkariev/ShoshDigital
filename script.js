@@ -336,19 +336,15 @@ function setLang(l) {
 
 
 /* ── CONTACT FORM ── */
- 
-// Change this to your server address when deployed:
-// Local development : 'http://localhost:3000/contact'
-// Live server       : 'https://yourdomain.com/contact'
-var BACKEND_URL = 'http://localhost:3000/contact';
- 
+var BACKEND_URL = '/api/contact';
+
 async function submitForm(e) {
   e.preventDefault();
- 
+
   var form   = document.getElementById('contactForm');
   var btn    = form.querySelector('.btn-form');
   var inputs = form.querySelectorAll('input, textarea, select');
- 
+
   var data = {
     name:    inputs[0].value.trim(),
     company: inputs[1].value.trim(),
@@ -357,13 +353,13 @@ async function submitForm(e) {
     service: inputs[4].value.trim(),
     message: inputs[5].value.trim(),
   };
- 
+
   if (!data.name || !data.contact) return;
- 
+
   var originalText = btn.textContent;
   btn.textContent = '⏳ Yuborilmoqda...';
   btn.disabled = true;
- 
+
   try {
     var res  = await fetch(BACKEND_URL, {
       method:  'POST',
@@ -371,7 +367,7 @@ async function submitForm(e) {
       body:    JSON.stringify(data),
     });
     var json = await res.json();
- 
+
     if (json.ok) {
       form.style.display = 'none';
       document.getElementById('formSuccess').style.display = 'block';
@@ -384,15 +380,59 @@ async function submitForm(e) {
     btn.disabled = false;
   }
 }
- 
- 
+
+
 /* ── MOBILE NAV ── */
-document.getElementById('burger').addEventListener('click', function() {
-  document.getElementById('navlinks').classList.toggle('open');
-});
- 
-document.querySelectorAll('.nl').forEach(function(link) {
-  link.addEventListener('click', function() {
-    document.getElementById('navlinks').classList.remove('open');
+(function() {
+  var burger = document.getElementById('burger');
+  var navlinks = document.getElementById('navlinks');
+  if (!burger || !navlinks) return;
+
+  // Ensure initial ARIA state
+  burger.setAttribute('aria-expanded', 'false');
+  navlinks.setAttribute('aria-hidden', 'true');
+
+  function openNav() {
+    navlinks.classList.add('open');
+    burger.classList.add('open');
+    burger.setAttribute('aria-expanded', 'true');
+    navlinks.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('nav-open');
+  }
+
+  function closeNav() {
+    navlinks.classList.remove('open');
+    burger.classList.remove('open');
+    burger.setAttribute('aria-expanded', 'false');
+    navlinks.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('nav-open');
+  }
+
+  burger.addEventListener('click', function(e) {
+    e.stopPropagation();
+    if (navlinks.classList.contains('open')) closeNav(); else openNav();
   });
-});
+
+  // Close when a nav link is chosen
+  document.querySelectorAll('.nl').forEach(function(link) {
+    link.addEventListener('click', function() { closeNav(); });
+  });
+
+  // Close on outside click
+  document.addEventListener('click', function(e) {
+    if (!navlinks.classList.contains('open')) return;
+    if (navlinks.contains(e.target) || burger.contains(e.target)) return;
+    closeNav();
+  });
+
+  // Close on Escape
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && navlinks.classList.contains('open')) closeNav();
+  });
+
+  // If user resizes to desktop breakpoint, ensure nav closed
+  window.addEventListener('resize', function() {
+    if (window.innerWidth > 1000 && navlinks.classList.contains('open')) closeNav();
+  });
+
+})();
