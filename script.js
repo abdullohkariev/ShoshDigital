@@ -392,7 +392,13 @@ function submitForm(e) {
     L.service + ': ' + service +
     (message ? '\n\n' + L.about + ':\n' + message : '');
 
-  window.open('https://t.me/shoshdigital?text=' + encodeURIComponent(text), '_blank');
+  var a = document.createElement('a');
+  a.href = 'https://t.me/shoshdigital?text=' + encodeURIComponent(text);
+  a.target = '_blank';
+  a.rel = 'noopener';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
 
   form.style.display = 'none';
   document.getElementById('formSuccess').style.display = 'block';
