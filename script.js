@@ -392,13 +392,9 @@ function submitForm(e) {
     L.service + ': ' + service +
     (message ? '\n\n' + L.about + ':\n' + message : '');
 
-  var a = document.createElement('a');
-  a.href = 'https://t.me/shoshdigital?text=' + encodeURIComponent(text);
-  a.target = '_blank';
-  a.rel = 'noopener';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
+  var url = 'https://t.me/shoshdigital?text=' + encodeURIComponent(text);
+  var tgBtn = document.getElementById('tgLink');
+  if (tgBtn) tgBtn.href = url;
 
   form.style.display = 'none';
   document.getElementById('formSuccess').style.display = 'block';
