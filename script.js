@@ -336,49 +336,66 @@ function setLang(l) {
 
 
 /* ── CONTACT FORM ── */
-var BACKEND_URL = '/api/contact';
+var FORM_LABELS = {
+  uz: {
+    header:  "🚀 Yangi loyiha so'rovi!",
+    name:    '👤 Ism',
+    company: '🏢 Kompaniya',
+    contact: '📬 Aloqa',
+    phone:   '📞 Telefon',
+    service: '🛠 Xizmat',
+    about:   "📝 Loyiha haqida",
+  },
+  ru: {
+    header:  '🚀 Новая заявка на проект!',
+    name:    '👤 Имя',
+    company: '🏢 Компания',
+    contact: '📬 Контакт',
+    phone:   '📞 Телефон',
+    service: '🛠 Услуга',
+    about:   '📝 О проекте',
+  },
+  en: {
+    header:  '🚀 New project request!',
+    name:    '👤 Name',
+    company: '🏢 Company',
+    contact: '📬 Contact',
+    phone:   '📞 Phone',
+    service: '🛠 Service',
+    about:   '📝 About the project',
+  },
+};
 
-async function submitForm(e) {
+function submitForm(e) {
   e.preventDefault();
 
   var form   = document.getElementById('contactForm');
-  var btn    = form.querySelector('.btn-form');
   var inputs = form.querySelectorAll('input, textarea, select');
 
-  var data = {
-    name:    inputs[0].value.trim(),
-    company: inputs[1].value.trim(),
-    contact: inputs[2].value.trim(),
-    phone:   inputs[3].value.trim(),
-    service: inputs[4].value.trim(),
-    message: inputs[5].value.trim(),
-  };
+  var name    = inputs[0].value.trim();
+  var company = inputs[1].value.trim();
+  var contact = inputs[2].value.trim();
+  var phone   = inputs[3].value.trim();
+  var service = inputs[4].value.trim();
+  var message = inputs[5].value.trim();
 
-  if (!data.name || !data.contact) return;
+  if (!name || !contact) return;
 
-  var originalText = btn.textContent;
-  btn.textContent = '⏳ Yuborilmoqda...';
-  btn.disabled = true;
+  var L = FORM_LABELS[lang] || FORM_LABELS.uz;
 
-  try {
-    var res  = await fetch(BACKEND_URL, {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify(data),
-    });
-    var json = await res.json();
+  var text =
+    L.header + '\n\n' +
+    L.name    + ': ' + name + '\n' +
+    (company ? L.company + ': ' + company + '\n' : '') +
+    L.contact + ': ' + contact + '\n' +
+    (phone ? L.phone + ': ' + phone + '\n' : '') +
+    L.service + ': ' + service +
+    (message ? '\n\n' + L.about + ':\n' + message : '');
 
-    if (json.ok) {
-      form.style.display = 'none';
-      document.getElementById('formSuccess').style.display = 'block';
-    } else {
-      throw new Error(json.error || 'Server error');
-    }
-  } catch (err) {
-    console.error('Submit error:', err);
-    btn.textContent = '❌ Xato yuz berdi. Qayta urining.';
-    btn.disabled = false;
-  }
+  window.open('https://t.me/shoshdigital?text=' + encodeURIComponent(text), '_blank');
+
+  form.style.display = 'none';
+  document.getElementById('formSuccess').style.display = 'block';
 }
 
 
